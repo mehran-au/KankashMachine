@@ -28,7 +28,6 @@ function km_map_iframe(array $site): string
     $gmaps = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($q);
     return '<div class="map-wrap">'
         . '<iframe title="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="' . km_h($src) . '"></iframe>'
-        . '<div class="map-pin" aria-hidden="true"></div>'
         . '<a class="map-cap" href="' . km_h($gmaps) . '" target="_blank" rel="noopener">' . km_h($plus) . ' · District 5, Tehran</a>'
         . '</div>';
 }
