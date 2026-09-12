@@ -2,8 +2,9 @@ Options -Indexes
 RewriteEngine On
 RewriteBase /
 
-# Block data directory
+# Block data directory and PHP includes
 RewriteRule ^data/ - [F,L]
+RewriteRule ^includes/ - [F,L]
 
 # Serve existing files and directories
 RewriteCond %{REQUEST_FILENAME} -f [OR]
