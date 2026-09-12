@@ -20,10 +20,11 @@ button, input, textarea { font-family: inherit; }
 .page { min-height: 100vh; display: flex; flex-direction: column; }
 main { flex: 1; }
 .utility {
-  display: flex; justify-content: space-between; gap: 16px;
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
   padding: 8px 6vw; font-size: 12px; color: var(--muted); background: var(--bg-2);
   border-bottom: 1px solid var(--line);
 }
+.utility a { color: inherit; }
 .site-header {
   display: flex; align-items: center; gap: 24px; padding: 14px 6vw;
   position: sticky; top: 0; z-index: 20; background: rgba(11,17,23,.92);
@@ -41,8 +42,9 @@ main { flex: 1; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .lang-flag {
   display: inline-flex; align-items: stretch; justify-content: center;
-  width: 36px; height: 36px; padding: 0; overflow: hidden; flex-shrink: 0;
-  border: 1px solid var(--line); border-radius: 50%; background: var(--bg-3);
+  width: 44px; height: 30px; padding: 0; overflow: hidden; flex-shrink: 0;
+  border: 2px solid #f3f0e8; border-radius: 3px; background: #012169;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.45);
 }
 .lang-flag .flag-svg { width: 100%; height: 100%; display: block; }
 .lang-flag:hover { border-color: var(--accent); }
