@@ -1,0 +1,196 @@
+<?php
+declare(strict_types=1);
+
+function km_resolve_lang(): string
+{
+    if (!empty($_GET['lang']) && in_array($_GET['lang'], ['fa', 'en'], true)) {
+        $lang = $_GET['lang'];
+        setcookie('km_lang', $lang, [
+            'expires' => time() + 365 * 24 * 3600,
+            'path' => km_base() === '' ? '/' : km_base() . '/',
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+        $_COOKIE['km_lang'] = $lang;
+        return $lang;
+    }
+    $cookie = $_COOKIE['km_lang'] ?? 'fa';
+    return in_array($cookie, ['fa', 'en'], true) ? $cookie : 'fa';
+}
+
+function km_ui_strings(string $lang): array
+{
+    $fa = [
+        'site_name' => 'کنکاش ماشین',
+        'tagline' => 'ماشین‌آلات صنعتی سفارشی',
+        'home' => 'خانه',
+        'products' => 'محصولات',
+        'projects' => 'پروژه‌ها',
+        'magazine' => 'مجله',
+        'about' => 'درباره ما',
+        'contact' => 'تماس با ما',
+        'follow_us' => 'شبکه‌های اجتماعی',
+        'mission' => 'ماموریت',
+        'vision' => 'چشم‌انداز',
+        'socials' => 'شبکه‌های اجتماعی',
+        'cta' => 'استعلام پروژه',
+        'read_more' => 'ادامه مطلب',
+        'view_all' => 'مشاهده همه',
+        'inquire' => 'درخواست مشاوره',
+        'our_products' => 'محصولات',
+        'our_projects' => 'پروژه‌های اجراشده',
+        'magazine_title' => 'مجله صنعتی',
+        'contact_title' => 'ارتباط با کارخانه',
+        'address' => 'نشانی',
+        'phone' => 'تلفن',
+        'email' => 'ایمیل',
+        'hours' => 'ساعات کاری',
+        'send' => 'ارسال پیام',
+        'name' => 'نام',
+        'message' => 'پیام',
+        'sent' => 'پیام شما ثبت شد. به‌زودی تماس می‌گیریم.',
+        'admin' => 'مدیریت',
+        'login' => 'ورود',
+        'logout' => 'خروج',
+        'username' => 'نام کاربری',
+        'password' => 'رمز عبور',
+        'save' => 'ذخیره',
+        'add' => 'افزودن',
+        'edit' => 'ویرایش',
+        'delete' => 'حذف',
+        'dashboard' => 'داشبورد',
+        'sliders' => 'اسلایدر',
+        'home_sections' => 'بخش‌های صفحه اصلی',
+        'menus' => 'منوها',
+        'fa_label' => 'فارسی',
+        'en_label' => 'English',
+        'image' => 'تصویر',
+        'order' => 'ترتیب',
+        'visible' => 'نمایش',
+        'slug' => 'نامک',
+        'body' => 'متن',
+        'excerpt' => 'خلاصه',
+        'title' => 'عنوان',
+        'subtitle' => 'زیرعنوان',
+        'url' => 'پیوند',
+        'map' => 'نقشه',
+        'lang_switch' => 'English',
+        'lang_switch_aria' => 'تغییر زبان به انگلیسی',
+        'all_products' => 'همه محصولات',
+        'all_projects' => 'همه پروژه‌ها',
+        'latest_articles' => 'تازه‌های مجله',
+        'capabilities' => 'توانمندی‌ها',
+        'hero_kicker' => 'مهندسی ماشین‌آلات خاص',
+        'footer_note' => 'طراحی و ساخت نوار نقاله، سورتر و خطوط انتقال مواد.',
+        'required' => 'الزامی',
+        'login_error' => 'نام کاربری یا رمز عبور نادرست است.',
+        'saved' => 'ذخیره شد.',
+        'bilingual_hint' => 'برای هر بخش، محتوای فارسی و انگلیسی را جداگانه وارد کنید.',
+        'current_image' => 'تصویر فعلی',
+        'no_items' => 'موردی ثبت نشده است.',
+        'confirm_delete' => 'حذف شود؟',
+        'admin_home' => 'بازگشت به سایت',
+        'category' => 'دسته',
+        'cta_label' => 'متن دکمه',
+        'cta_url' => 'پیوند دکمه',
+        'plus_code' => 'کد مکانی گوگل',
+        'messages' => 'پیام‌های تماس',
+        'empty_inbox' => 'پیامی نیست.',
+    ];
+    $en = [
+        'site_name' => 'Kankash Machine',
+        'tagline' => 'Custom industrial machinery',
+        'home' => 'Home',
+        'products' => 'Products',
+        'projects' => 'Projects',
+        'magazine' => 'Magazine',
+        'about' => 'About us',
+        'contact' => 'Contact',
+        'follow_us' => 'Social media',
+        'mission' => 'Mission',
+        'vision' => 'Vision',
+        'socials' => 'Social media',
+        'cta' => 'Project inquiry',
+        'read_more' => 'Read more',
+        'view_all' => 'View all',
+        'inquire' => 'Request a consult',
+        'our_products' => 'Products',
+        'our_projects' => 'Built projects',
+        'magazine_title' => 'Industrial magazine',
+        'contact_title' => 'Plant contact',
+        'address' => 'Address',
+        'phone' => 'Phone',
+        'email' => 'Email',
+        'hours' => 'Hours',
+        'send' => 'Send message',
+        'name' => 'Name',
+        'message' => 'Message',
+        'sent' => 'Message received. We will contact you shortly.',
+        'admin' => 'Admin',
+        'login' => 'Sign in',
+        'logout' => 'Sign out',
+        'username' => 'Username',
+        'password' => 'Password',
+        'save' => 'Save',
+        'add' => 'Add',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'dashboard' => 'Dashboard',
+        'sliders' => 'Slider',
+        'home_sections' => 'Home sections',
+        'menus' => 'Menus',
+        'fa_label' => 'Persian',
+        'en_label' => 'English',
+        'image' => 'Image',
+        'order' => 'Order',
+        'visible' => 'Visible',
+        'slug' => 'Slug',
+        'body' => 'Body',
+        'excerpt' => 'Excerpt',
+        'title' => 'Title',
+        'subtitle' => 'Subtitle',
+        'url' => 'URL',
+        'map' => 'Map',
+        'lang_switch' => 'فارسی',
+        'lang_switch_aria' => 'Switch language to Persian',
+        'all_products' => 'All products',
+        'all_projects' => 'All projects',
+        'latest_articles' => 'Latest articles',
+        'capabilities' => 'Capabilities',
+        'hero_kicker' => 'Special-purpose machine engineering',
+        'footer_note' => 'Design and build of conveyors, sorters, and material-handling lines.',
+        'required' => 'Required',
+        'login_error' => 'Invalid username or password.',
+        'saved' => 'Saved.',
+        'bilingual_hint' => 'Enter Persian and English content for every field.',
+        'current_image' => 'Current image',
+        'no_items' => 'Nothing here yet.',
+        'confirm_delete' => 'Delete this item?',
+        'admin_home' => 'View site',
+        'category' => 'Category',
+        'cta_label' => 'Button label',
+        'cta_url' => 'Button URL',
+        'plus_code' => 'Google plus code',
+        'messages' => 'Contact messages',
+        'empty_inbox' => 'No messages.',
+    ];
+    return $lang === 'en' ? $en : $fa;
+}
+
+function km_t(string $key): string
+{
+    global $KM_T;
+    return $KM_T[$key] ?? $key;
+}
+
+function km_lang_toggle_url(): string
+{
+    global $KM_LANG;
+    $target = $KM_LANG === 'fa' ? 'en' : 'fa';
+    $path = km_request_path();
+    $query = $_GET;
+    unset($query['lang']);
+    $query['lang'] = $target;
+    $qs = http_build_query($query);
+    return km_url($path) . '?' . $qs;
+}

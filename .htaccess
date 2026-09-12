@@ -1,0 +1,14 @@
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# Block data directory
+RewriteRule ^data/ - [F,L]
+
+# Serve existing files and directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Front controller
+RewriteRule ^(.*)$ index.php [QSA,L]

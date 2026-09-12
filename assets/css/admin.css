@@ -1,0 +1,43 @@
+.admin-body { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+.admin-side {
+  background: #0a0f14; border-inline-end: 1px solid var(--line); padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.admin-side nav { display: flex; flex-direction: column; gap: 4px; margin: 18px 0; }
+.admin-side a { padding: 8px 10px; border-radius: 6px; color: var(--muted); }
+.admin-side a.is-active, .admin-side a:hover { background: var(--bg-3); color: var(--ink); }
+.admin-main { padding: 0 0 48px; }
+.admin-top { display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 1px solid var(--line); }
+.admin-top h1 { margin: 0; font-size: 22px; }
+.hint { color: var(--muted); padding: 0 28px; }
+.admin-split { display: grid; grid-template-columns: 1.1fr .9fr; gap: 20px; padding: 0 28px 28px; }
+.bi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 16px; }
+.bi-col { display: block; }
+.bi-col span {
+  display: block; font-size: 12px; color: var(--accent-2); margin-bottom: 6px; font-weight: 700;
+}
+.field-label { margin: 16px 0 0; font-weight: 700; }
+.thumb { width: 160px; height: 90px; object-fit: cover; border-radius: 6px; margin-top: 8px; }
+.row-item {
+  display: flex; justify-content: space-between; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.row-item small { display: block; color: var(--muted); }
+.row-actions { display: flex; gap: 8px; align-items: center; }
+.row-actions form { margin: 0; }
+.row-actions button, .row-actions a {
+  background: none; border: 0; color: var(--accent-2); cursor: pointer; padding: 0;
+}
+.check { display: flex; align-items: center; gap: 8px; }
+.check input { width: auto; }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 28px; }
+.stat { background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+.stat strong { display: block; font-size: 32px; }
+.login-body { min-height: 100vh; display: grid; place-items: center; }
+.login-card { width: min(420px, 92vw); background: var(--bg-2); padding: 28px; border-radius: 12px; border: 1px solid var(--line); }
+.error { color: #ffb4b4; }
+.social-admin { display: grid; grid-template-columns: 42px 120px 1fr; gap: 10px; align-items: center; }
+.social-admin .social-btn { pointer-events: none; }
+@media (max-width: 900px) {
+  .admin-body, .admin-split, .bi-grid, .stat-grid, .social-admin { grid-template-columns: 1fr; }
+}

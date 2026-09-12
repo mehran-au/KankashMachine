@@ -1,0 +1,15 @@
+/data/site.local.json
+/uploads/*
+!/uploads/.htaccess
+!/uploads/hero-factory.jpg
+!/uploads/product-conveyor.jpg
+!/uploads/product-sorter.jpg
+!/uploads/product-roller.jpg
+!/uploads/project-line.jpg
+!/uploads/about-workshop.jpg
+.DS_Store
+Thumbs.db
+*.log
+.env
+.idea/
+.vscode/

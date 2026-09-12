@@ -1,0 +1,214 @@
+{
+  "admin": {
+    "username": "admin",
+    "password_hash": "ef741513ba878970e7fd1c8c9f03341cba148c966d70ebe2947c41d9af3a824b"
+  },
+  "settings": {
+    "phone": "+98 21 0000 0000",
+    "email": "info@kankashmachine.com",
+    "hours_fa": "شنبه تا چهارشنبه ۹ تا ۱۷",
+    "hours_en": "Sat–Wed 9:00–17:00",
+    "address_fa": "کد مکانی Q83J+MQC، منطقه ۵، تهران، استان تهران، ایران",
+    "address_en": "Q83J+MQC District 5, Tehran, Tehran Province, Iran",
+    "plus_code": "Q83J+MQC",
+    "map_query": "Q83J+MQC District 5, Tehran, Tehran Province, Iran",
+    "socials": {
+      "instagram": "",
+      "telegram": "",
+      "whatsapp": "",
+      "linkedin": "",
+      "youtube": "",
+      "aparat": "",
+      "x": "",
+      "facebook": ""
+    }
+  },
+  "menus": [
+    {"id": 1, "label_fa": "خانه", "label_en": "Home", "url": "/", "order": 1, "visible": true},
+    {"id": 2, "label_fa": "محصولات", "label_en": "Products", "url": "/products", "order": 2, "visible": true},
+    {"id": 3, "label_fa": "پروژه‌ها", "label_en": "Projects", "url": "/projects", "order": 3, "visible": true},
+    {"id": 4, "label_fa": "درباره ما", "label_en": "About us", "url": "/about", "order": 4, "visible": true},
+    {"id": 5, "label_fa": "مجله", "label_en": "Magazine", "url": "/magazine", "order": 5, "visible": true},
+    {"id": 6, "label_fa": "تماس با ما", "label_en": "Contact", "url": "/contact", "order": 6, "visible": true}
+  ],
+  "sliders": [
+    {
+      "id": 1,
+      "image": "hero-factory.jpg",
+      "title_fa": "خطوط انتقال مواد، مهندسی‌شده برای کارخانه شما",
+      "title_en": "Material-handling lines engineered for your plant",
+      "subtitle_fa": "نوار نقاله، سورتر و سیستم‌های سفارشی از کارخانه تهران.",
+      "subtitle_en": "Conveyors, sorters, and custom systems from our Tehran plant.",
+      "cta_fa": "مشاهده محصولات",
+      "cta_en": "View products",
+      "cta_url": "/products",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": 2,
+      "image": "product-conveyor.jpg",
+      "title_fa": "نوار نقاله صنعتی با ظرفیت بالا",
+      "title_en": "High-capacity industrial belt conveyors",
+      "subtitle_fa": "طراحی بر اساس بار، طول مسیر و شرایط محیطی.",
+      "subtitle_en": "Designed around load, path length, and site conditions.",
+      "cta_fa": "استعلام پروژه",
+      "cta_en": "Project inquiry",
+      "cta_url": "/contact",
+      "order": 2,
+      "visible": true
+    },
+    {
+      "id": 3,
+      "image": "product-sorter.jpg",
+      "title_fa": "سورتر و جداسازی دقیق",
+      "title_en": "Precision sorting systems",
+      "subtitle_fa": "جداسازی وزنی، ابعادی و نوری برای خطوط تولید.",
+      "subtitle_en": "Weight, size, and optical sorting for production lines.",
+      "cta_fa": "پروژه‌ها",
+      "cta_en": "Projects",
+      "cta_url": "/projects",
+      "order": 3,
+      "visible": true
+    }
+  ],
+  "home_sections": [
+    {
+      "id": 1,
+      "key": "intro",
+      "title_fa": "ماشین‌سازی برای صنعت واقعی",
+      "title_en": "Machine building for real industry",
+      "body_fa": "کنکاش ماشین خطوط انتقال، سورتر و تجهیزات جانبی را متناسب با فضای سالن، نوع محصول و ظرفیت خط شما طراحی و می‌سازد.",
+      "body_en": "Kankash Machine designs and builds transfer lines, sorters, and ancillary equipment around your hall, product, and throughput.",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": 2,
+      "key": "capability",
+      "title_fa": "از طراحی تا راه‌اندازی",
+      "title_en": "From design to commissioning",
+      "body_fa": "مهندسی مکانیک، ساخت اسکلت فولادی، مونتاژ، برق و تحویل در محل.",
+      "body_en": "Mechanical engineering, steel fabrication, assembly, electrics, and on-site handover.",
+      "order": 2,
+      "visible": true
+    }
+  ],
+  "about": {
+    "title_fa": "درباره کنکاش ماشین",
+    "title_en": "About Kankash Machine",
+    "subtitle_fa": "سازنده ماشین‌آلات خاص صنعتی در تهران",
+    "subtitle_en": "Special-purpose industrial machinery builder in Tehran",
+    "image": "about-workshop.jpg",
+    "body_fa": "کنکاش ماشین مجموعه‌ای مهندسی است که نوار نقاله، سورتر، بالابر و خطوط انتقال مواد را برای کارخانه‌های غذایی، معدنی، بسته‌بندی و لجستیک طراحی و می‌سازد. کارخانه در منطقه ۵ تهران قرار دارد و پروژه‌ها از نقشه‌کشی تا نصب در محل پشتیبانی می‌شوند.",
+    "body_en": "Kankash Machine is an engineering shop that designs and builds conveyors, sorters, elevators, and material-handling lines for food, mining, packaging, and logistics plants. The factory is in Tehran District 5, and projects are supported from drawings through on-site installation.",
+    "mission_fa": "ساخت ماشین‌آلات قابل نگهداری، ایمن و متناسب با شرایط واقعی سالن تولید ایران.",
+    "mission_en": "Build maintainable, safe machines that fit real Iranian production halls.",
+    "vision_fa": "مرجع ماشین‌آلات سفارشی انتقال مواد در صنعت کشور.",
+    "vision_en": "Be the reference for custom material-handling machines in Iranian industry."
+  },
+  "products": [
+    {
+      "id": 1,
+      "slug": "belt-conveyor",
+      "image": "product-conveyor.jpg",
+      "title_fa": "نوار نقاله تسمه‌ای",
+      "title_en": "Belt conveyor",
+      "excerpt_fa": "انتقال پیوسته کارتن، فله و قطعات با عرض و طول سفارشی.",
+      "excerpt_en": "Continuous transfer of cartons, bulk, and parts with custom width and length.",
+      "body_fa": "نوار نقاله تسمه‌ای کنکاش با شاسی فولادی، درام محرک، رولیک‌های حامل و تسمه‌های لاستیکی یا PVC ساخته می‌شود. شیب، گارد ایمنی و ایستگاه‌های بارگیری مطابق نیاز خط تنظیم می‌گردد.",
+      "body_en": "Kankash belt conveyors use a steel chassis, drive drums, carrying rollers, and rubber or PVC belts. Incline, guards, and loading stations are set to the line.",
+      "category_fa": "انتقال مواد",
+      "category_en": "Handling",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": 2,
+      "slug": "industrial-sorter",
+      "image": "product-sorter.jpg",
+      "title_fa": "سورتر صنعتی",
+      "title_en": "Industrial sorter",
+      "excerpt_fa": "جداسازی محصول بر اساس وزن، اندازه یا مشخصه نوری.",
+      "excerpt_en": "Sort product by weight, size, or optical feature.",
+      "body_fa": "سورترهای کنکاش برای خطوط غذایی و صنعتی با ایستگاه توزین، گیت‌های پنوماتیک و کنترل PLC عرضه می‌شوند.",
+      "body_en": "Kankash sorters for food and industrial lines include weigh stations, pneumatic gates, and PLC control.",
+      "category_fa": "جداسازی",
+      "category_en": "Sorting",
+      "order": 2,
+      "visible": true
+    },
+    {
+      "id": 3,
+      "slug": "roller-conveyor",
+      "image": "product-roller.jpg",
+      "title_fa": "نوار نقاله رولیکی",
+      "title_en": "Roller conveyor",
+      "excerpt_fa": "انتقال کارتن و پالت با رولیک آزاد یا موتوری.",
+      "excerpt_en": "Carton and pallet transfer with gravity or powered rollers.",
+      "body_fa": "مناسب انبار، بسته‌بندی و بارگیری. امکان ترکیب با میز تجمع و ایستگاه توزین.",
+      "body_en": "Suited to warehousing, packing, and loading. Can combine with accumulation tables and weigh stations.",
+      "category_fa": "انتقال مواد",
+      "category_en": "Handling",
+      "order": 3,
+      "visible": true
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "slug": "food-sorting-line",
+      "image": "project-line.jpg",
+      "title_fa": "خط سورتینگ مواد غذایی",
+      "title_en": "Food sorting line",
+      "excerpt_fa": "طراحی و نصب خط جداسازی و انتقال در سالن تولید.",
+      "excerpt_en": "Design and install of a sorting and transfer line in a production hall.",
+      "body_fa": "پروژه شامل نوار تغذیه، ایستگاه سورتر و خروجی‌های چندگانه به بسته‌بندی بود.",
+      "body_en": "The project included a feed belt, sorter station, and multiple discharges to packing.",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": 2,
+      "slug": "warehouse-conveyors",
+      "image": "product-roller.jpg",
+      "title_fa": "کانوایر انبار و بارگیری",
+      "title_en": "Warehouse and loading conveyors",
+      "excerpt_fa": "مسیر رولیکی و تسمه‌ای برای انتقال کارتن به اسکله بارگیری.",
+      "excerpt_en": "Roller and belt path moving cartons to the loading dock.",
+      "body_fa": "ارتفاع قابل تنظیم و گارد کناری برای ایمنی اپراتور در نظر گرفته شد.",
+      "body_en": "Adjustable height and side guards were specified for operator safety.",
+      "order": 2,
+      "visible": true
+    }
+  ],
+  "magazine": [
+    {
+      "id": 1,
+      "slug": "conveyor-maintenance",
+      "image": "product-conveyor.jpg",
+      "title_fa": "نگهداری نوار نقاله: چک‌لیست ماهانه",
+      "title_en": "Conveyor maintenance: a monthly checklist",
+      "excerpt_fa": "بازرسی تسمه، رولیک و یاتاقان از توقف‌های پرهزینه جلوگیری می‌کند.",
+      "excerpt_en": "Inspecting belts, rollers, and bearings prevents costly downtime.",
+      "body_fa": "هر ماه کشش تسمه، صدای بیرینگ و تمیزی مسیر را بررسی کنید. روانکاری طبق توصیه سازنده و ثبت در دفتر نگهداری کارخانه انجام شود.",
+      "body_en": "Each month check belt tension, bearing noise, and path cleanliness. Lubricate to the builder’s schedule and log it in the plant book.",
+      "order": 1,
+      "visible": true
+    },
+    {
+      "id": 2,
+      "slug": "choosing-a-sorter",
+      "image": "product-sorter.jpg",
+      "title_fa": "چگونه سورتر مناسب خط خود را انتخاب کنیم",
+      "title_en": "How to choose a sorter for your line",
+      "excerpt_fa": "وزن، ابعاد قطعه و نرخ تولید سه معیار اصلی انتخاب هستند.",
+      "excerpt_en": "Piece weight, size, and throughput are the three main selection criteria.",
+      "body_fa": "اگر محصول شکننده است، مسیر افقی بهتر از سقوط آزاد است. برای دقت بالا، توزین استاتیک یا سلول بار را با گیت پنوماتیک ترکیب کنید.",
+      "body_en": "Fragile product prefers a horizontal path over free-fall. For high accuracy, combine static weighing or a load cell with a pneumatic gate.",
+      "order": 2,
+      "visible": true
+    }
+  ],
+  "messages": []
+}
