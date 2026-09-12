@@ -45,7 +45,7 @@ function km_admin_header(string $title): void
 </aside>
 <div class="admin-main">
     <header class="admin-top"><h1><?= km_h($title) ?></h1>
-        <a class="lang-flag" href="<?= km_h(km_lang_toggle_url()) ?>"><?= $KM_LANG === 'fa' ? '🇬🇧 EN' : '🇮🇷 FA' ?></a>
+        <?= km_lang_toggle_html() ?>
     </header>
     <?php
 }

@@ -33,12 +33,25 @@ function km_render_socials(array $site, string $class = 'socials'): string
     return $html;
 }
 
+function km_flag_svg(string $code): string
+{
+    if ($code === 'gb') {
+        return '<svg class="flag-svg" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30 M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30 M60,0 0,30" stroke="#C8102E" stroke-width="2"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>';
+    }
+    return '<svg class="flag-svg" viewBox="0 0 21 14" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="21" height="4.67" fill="#239F40"/><rect y="4.67" width="21" height="4.66" fill="#fff"/><rect y="9.33" width="21" height="4.67" fill="#DA0000"/><path fill="#DA0000" d="M10.5 5.35l.35 1.05h1.1l-.9.65.35 1.05-.9-.65-.9.65.35-1.05-.9-.65h1.1z"/></svg>';
+}
+
+function km_lang_toggle_html(): string
+{
+    global $KM_LANG;
+    $next = $KM_LANG === 'fa' ? 'gb' : 'ir';
+    return '<a class="lang-flag" href="' . km_h(km_lang_toggle_url()) . '" aria-label="' . km_h(km_t('lang_switch_aria')) . '" title="' . km_h(km_t('lang_switch')) . '">' . km_flag_svg($next) . '</a>';
+}
+
 function km_header(array $site, string $title, string $description = ''): void
 {
     global $KM_LANG, $KM_DIR;
     $menus = km_visible_menu($site);
-    $nextLang = $KM_LANG === 'fa' ? 'en' : 'fa';
-    $flag = $KM_LANG === 'fa' ? '🇬🇧' : '🇮🇷';
     $path = km_request_path();
     ?>
 <!DOCTYPE html>
@@ -75,10 +88,7 @@ function km_header(array $site, string $title, string $description = ''): void
             <?php endforeach; ?>
         </nav>
         <div class="header-actions">
-            <a class="lang-flag" href="<?= km_h(km_lang_toggle_url()) ?>" aria-label="<?= km_h(km_t('lang_switch_aria')) ?>" title="<?= km_h(km_t('lang_switch')) ?>">
-                <span class="flag-emoji" aria-hidden="true"><?= $flag ?></span>
-                <span><?= km_h(strtoupper($nextLang)) ?></span>
-            </a>
+            <?= km_lang_toggle_html() ?>
             <a class="btn btn-accent" href="<?= km_h(km_url('/contact')) ?>"><?= km_h(km_t('cta')) ?></a>
         </div>
     </header>
