@@ -49,8 +49,8 @@ main { flex: 1; }
   color: #fff; clip-path: polygon(0 0, 100% 0, 100% 72%, 72% 100%, 0 100%);
   font-weight: 700;
 }
-.nav { display: flex; gap: 22px; margin-inline-start: auto; }
-.nav-link { font-size: 14px; color: var(--muted); position: relative; }
+.nav { display: flex; gap: 26px; margin-inline-start: auto; }
+.nav-link { font-size: 18px; font-weight: 500; color: var(--muted); position: relative; }
 .nav-link.is-active, .nav-link:hover { color: var(--ink); }
 .nav-link.is-active::after {
   content: ""; position: absolute; inset-inline: 0; bottom: -8px; height: 2px; background: var(--accent);
