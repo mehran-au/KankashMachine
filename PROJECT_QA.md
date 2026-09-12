@@ -1,14 +1,13 @@
-# KankashMachine — Function-level QA checklist
+# KankashMachine — Function-level QA checklist (post-deploy)
 
-**Inspected:** 2026-09-12  
+**Inspected:** 2026-09-12 (post-deploy pass)  
 **Workspace:** `C:\Users\Mehran\Projects\KankashMachine`  
-**GitHub:** https://github.com/mehran-au/KankashMachine  
+**GitHub:** https://github.com/mehran-au/KankashMachine (`main` @ `9d5dcaa`)  
 **Figma:** https://www.figma.com/design/HYktHyY4LOtnnAEO6jwbRm (fileKey `HYktHyY4LOtnnAEO6jwbRm`)  
 **Live:** https://kankashmachine.com  
 **DirectAdmin:** https://kankashmachine.com:2223/ (credentials are not stored, printed, or committed)
 
-**Status legend:** PASS | FAIL | PENDING  
-PENDING = cannot be verified until code or deploy exists. FAIL = required artifact is missing or currently does not meet the acceptance function.
+**Status legend:** PASS | FAIL | PENDING
 
 ---
 
@@ -16,22 +15,22 @@ PENDING = cannot be verified until code or deploy exists. FAIL = required artifa
 
 | Source | Result |
 | --- | --- |
-| Local workspace | **Empty.** `Get-ChildItem -Force` count = 0. No `.git`, no PHP/HTML/JS/CSS, no `public_html`, no `.env`. |
-| Local git | Not a git repository. |
-| GitHub `mehran-au/KankashMachine` | **Exists** (public). Created 2026-09-12. Default branch `main`. Tree is **README.md only** (123 bytes). 1 commit: `ffd832ee` “Initial commit”. |
-| Figma file | **Exists.** One page: `Website — FA default` (`0:1`). One frame: `Home / خانه` (`2:2`, 1440×960) with eight labeled 120px strips (Header, Hero Slider, Capabilities, Products, Projects, Magazine, Contact Map, Footer). Not a full industrial UI. No products/projects/magazine/contact/admin screens. No EN/LTR page. |
-| Live domain | DirectAdmin default placeholder: “Something amazing will be constructed here… upload your website into the public_html directory.” |
-| PHP CLI | Not installed / not on PATH (`php` is not recognized). No PHP files to lint. |
+| Local workspace | Full PHP site: `index.php`, `includes/*.php`, `assets/`, `data/site.json`, `uploads/`. Tracks `origin` `https://github.com/mehran-au/KankashMachine.git`, `main...origin/main`. |
+| GitHub | Application code is on `main` (commit `9d5dcaa` — bilingual industrial website with CMS, about page, conditional social icons). Tree includes PHP, CSS, JS, `.htaccess`, uploads, `data/site.json`. |
+| Figma | Still one page `Website — FA default` (`0:1`) with wireframe frame `Home / خانه` (`2:2`) — labeled 120px strips only. No products/projects/magazine/contact/admin/EN screens. |
+| Live domain | Company site is live (not the DirectAdmin placeholder). nginx + PHP. |
+| PHP CLI (local) | Still not on PATH. Lint not run locally. Live PHP is executing. |
 
-**Code greps (workspace):** no matches for language switching, bilingual field names, map embed, or admin routes — because there is no application source.
+**Code greps (workspace)**
 
-| Search | Pattern | Result |
-| --- | --- | --- |
-| Language switch | `lang`, `rtl`, `ltr`, `title_fa`, `title_en` | No files |
-| Bilingual admin fields | `title_fa` / `title_en` / `_fa` / `_en` | No files |
-| Map embed | `Q83J+MQC`, `google.com/maps`, `iframe`, `maps.google` | No files |
-| Admin | `admin`, `login`, `logout`, `session` | No files |
-| `php -l` | every `*.php` | **Skipped** — 0 PHP files; PHP CLI absent |
+| Search | Result |
+| --- | --- |
+| Language | `includes/i18n.php` `km_resolve_lang()`; cookie `km_lang`; default `fa`. Layout `<html lang="<?= $KM_LANG ?>" dir="<?= $KM_DIR ?>">`. Flag `km_lang_toggle_url()`. |
+| Bilingual admin | `km_bi_fields()` / `km_collect_bi()` in `includes/admin.php`. Content keys `*_fa` / `*_en`. |
+| Map | `index.php` `km_map_iframe()` → `maps.google.com/maps?q=` + `map_query`. Default/live query contains `Q83J+MQC`. |
+| Socials | `km_active_socials()` skips empty URLs; `km_render_socials()` returns `''` if none. Admin contact has `social_*` URL inputs. |
+| Admin routes | `/admin/login`, logout, dashboard, sliders, home, menus, products, projects, about, magazine, contact. |
+| `php -l` | **Skipped** — local `php` CLI absent. Live pages parse and return 200. |
 
 ---
 
@@ -39,42 +38,40 @@ PENDING = cannot be verified until code or deploy exists. FAIL = required artifa
 
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| GH-01 | GitHub repo named `KankashMachine` exists | https://github.com/mehran-au/KankashMachine is reachable and named `KankashMachine` | **PASS** | Public repo `mehran-au/KankashMachine`. Description: bilingual FA/EN CMS. |
-| GH-02 | Application source is in the repo | PHP/HTML/JS (or equivalent) for public site + admin is committed | **FAIL** | Tree = `README.md` only. Local folder is empty and not cloned. |
-| GH-03 | Local workspace tracks the GitHub repo | `.git` remote `origin` → `mehran-au/KankashMachine` | **FAIL** | `fatal: not a git repository`. |
-| DA-01 | Site is deployed to DirectAdmin `public_html` of kankashmachine.com | Live origin serves the company site, not the host default page | **FAIL** | https://kankashmachine.com still shows the DirectAdmin “upload to public_html” placeholder. **Not deployed (this QA pass does not deploy).** |
-| DA-02 | DirectAdmin password is not committed to git | No password/token in repo files, history, or docs | **PASS** | GitHub contents = README only. Local workspace has no secret files. This QA pass did not invent, print, or commit credentials. |
-| DA-03 | DirectAdmin panel is reachable for operators | https://kankashmachine.com:2223/ is the documented control panel | **PENDING** | URL is known. Login was not attempted (no credentials in repo; QA must not invent them). |
+| GH-01 | GitHub repo named `KankashMachine` exists | Repo reachable | **PASS** | https://github.com/mehran-au/KankashMachine |
+| GH-02 | Application source is in the repo | Public site + admin committed | **PASS** | Tree has `index.php`, `includes/`, `assets/`, `data/`, `uploads/`, `.htaccess`. |
+| GH-03 | Local workspace tracks GitHub | `origin` → `mehran-au/KankashMachine` | **PASS** | `git status`: `main...origin/main`. |
+| DA-01 | Deployed to `public_html` of kankashmachine.com | Live origin serves the company site | **PASS** | https://kankashmachine.com/ returns the bilingual site (html lang=fa), not the host default page. |
+| DA-02 | DirectAdmin password is not committed | No DA password/token in repo | **PASS** | No DirectAdmin password in tree. README only says not to commit it. |
+| DA-03 | DirectAdmin panel reachable | :2223 documented | **PENDING** | Panel URL known. Login not attempted (no DA credentials in repo). |
 
 ---
 
 ## 2. Figma industrial bilingual UI
 
-Required screens: landing/home, projects, products, magazine/blog, contact, admin.
-
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| FG-01 | Figma file exists and is the design source | fileKey `HYktHyY4LOtnnAEO6jwbRm` opens | **PASS** | File reachable via Figma API. Page: `Website — FA default`. |
-| FG-02 | Home / landing industrial UI | Full home composition (header, slider, sections, footer), not labels only | **FAIL** | Frame `Home / خانه` (`2:2`) is a stack of 120px named strips. No real layout, imagery, type system, or industrial visual language. |
-| FG-03 | Projects screens | Projects list + project detail frames | **FAIL** | Not in the document. Home has a strip named `Projects` only. |
-| FG-04 | Products screens | Products list + product detail frames | **FAIL** | Not in the document. Home has a strip named `Products` only. |
-| FG-05 | Magazine / blog screens | Magazine list + article detail frames | **FAIL** | Not in the document. Home has a strip named `Magazine` only. |
-| FG-06 | Contact screen | Dedicated contact page (form + map region) | **FAIL** | Not in the document. Home has a strip named `Contact Map` only. |
-| FG-07 | Admin screens | Login + CMS editors (slider, home, menu, magazine, projects, products, contact) | **FAIL** | No admin page/frame. |
-| FG-08 | English / LTR counterpart | EN layouts or documented LTR variants | **FAIL** | Single page named FA default. No EN page. |
-| UI-01 | Implemented UI matches Figma | Public + admin pages implement the Figma screens | **FAIL** | No implementation files. Figma itself is incomplete (wireframe home only). |
+| FG-01 | Figma file exists | fileKey opens | **PASS** | File reachable. |
+| FG-02 | Home / landing industrial UI | Full home composition | **FAIL** | Still wireframe strips only (`Home / خانه` `2:2`). |
+| FG-03 | Projects screens | List + detail frames | **FAIL** | Not in Figma. Live `/projects` and `/projects/food-sorting-line` exist (200). |
+| FG-04 | Products screens | List + detail frames | **FAIL** | Not in Figma. Live `/products` and `/products/belt-conveyor` exist (200). |
+| FG-05 | Magazine screens | List + article frames | **FAIL** | Not in Figma. Live `/magazine` and `/magazine/conveyor-maintenance` exist (200). |
+| FG-06 | Contact screen | Dedicated contact | **FAIL** | Not in Figma. Live `/contact` exists (200). |
+| FG-07 | Admin screens | Login + editors | **FAIL** | Not in Figma. Live `/admin/login` and CMS exist. |
+| FG-08 | English / LTR counterpart | EN layouts in Figma | **FAIL** | Single FA-default page. Live EN works via `?lang=en`. |
+| UI-01 | Implemented UI matches Figma | Pixel/design parity | **FAIL** | Figma is incomplete wireframe; live is a custom industrial implementation, not a Figma match. |
 
 ---
 
-## 3. Language: Persian default, English switch, persistence
+## 3. Language
 
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| LANG-01 | Default language is Persian (RTL) | First visit: `lang="fa"` (or equivalent), `dir="rtl"`, Persian copy | **FAIL** | No pages, no `lang`/`dir` handling. |
-| LANG-02 | Flag icon switches to English (LTR) | Clicking the flag sets English, `dir="ltr"`, English copy | **FAIL** | No flag control, no switcher JS/PHP. |
-| LANG-03 | Reverse flag returns to Persian | Second click restores FA + RTL | **FAIL** | No switcher. |
-| LANG-04 | Language persists across pages | Cookie or session survives navigation (home → products → contact, etc.) | **FAIL** | No cookie/session language store. |
-| LANG-05 | Language applies to every public page | Home, products list+detail, projects list+detail, magazine list+detail, contact all honor stored locale | **FAIL** | Public pages do not exist. |
+| LANG-01 | Default Persian RTL | `/` → `lang="fa"` `dir="rtl"` | **PASS** | Live `/`: `<html lang="fa" dir="rtl">`. |
+| LANG-02 | Flag switches to English LTR | Flag → EN, `dir="ltr"` | **PASS** | Home flag `href="/?lang=en"`. Live `/?lang=en`: `<html lang="en" dir="ltr">`. Cookie `km_lang=en` set. |
+| LANG-03 | Reverse flag returns to Persian | EN flag → FA | **PASS** | EN page flag `href="/?lang=fa"` (label FA). |
+| LANG-04 | Language persists across pages | Cookie/session survives navigation | **PASS** | After `/?lang=en`, request `/products` with session cookie → `<html lang="en" dir="ltr">`. `km_resolve_lang()` reads `km_lang` cookie. |
+| LANG-05 | Applies to every public page | All public routes honor locale | **PASS** | Same header/layout. `/about?lang=en` h1 `About Kankash Machine`, Mission, Vision. |
 
 ---
 
@@ -82,14 +79,15 @@ Required screens: landing/home, projects, products, magazine/blog, contact, admi
 
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| PUB-01 | Home | Routable home with slider + sections | **FAIL** | No `index.php` / `index.html`. Live is host placeholder. |
-| PUB-02 | Products list | List of products, bilingual | **FAIL** | No products list route/file. |
-| PUB-03 | Product detail | Single-product page | **FAIL** | No product detail route/file. |
-| PUB-04 | Projects list | List of projects, bilingual | **FAIL** | No projects list route/file. |
-| PUB-05 | Project detail | Single-project page | **FAIL** | No project detail route/file. |
-| PUB-06 | Magazine list | Blog/magazine index | **FAIL** | No magazine list route/file. |
-| PUB-07 | Magazine detail | Article page | **FAIL** | No magazine detail route/file. |
-| PUB-08 | Contact | Contact page with form/info + map | **FAIL** | No contact route/file. |
+| PUB-01 | Home `/` | 200, slider + sections | **PASS** | Live 200. |
+| PUB-02 | Products list `/products` | 200 | **PASS** | Live 200. |
+| PUB-03 | Product detail | 200 | **PASS** | `/products/belt-conveyor` 200. |
+| PUB-04 | Projects list `/projects` | 200 | **PASS** | Live 200. |
+| PUB-05 | Project detail | 200 | **PASS** | `/projects/food-sorting-line` 200. |
+| PUB-06 | Magazine list `/magazine` | 200 | **PASS** | Live 200. |
+| PUB-07 | Magazine detail | 200 | **PASS** | `/magazine/conveyor-maintenance` 200. |
+| PUB-08 | Contact `/contact` | 200, form + map | **PASS** | Live 200. |
+| PUB-09 | About `/about` | 200, bilingual about | **PASS** | Live 200. FA title from `about.title_fa`. EN h1 `About Kankash Machine`. |
 
 ---
 
@@ -97,7 +95,7 @@ Required screens: landing/home, projects, products, magazine/blog, contact, admi
 
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| MAP-01 | Map points at the Google address | Embed/link targets **Q83J+MQC District 5, Tehran, Tehran Province, Iran** (Plus Code `Q83J+MQC`) | **FAIL** | No contact page, no iframe, no Plus Code, no Google Maps embed in workspace or GitHub. |
+| MAP-01 | Map iframe query contains Q83J+MQC | Google embed targets Plus Code | **PASS** | Live `/contact` iframe `src="https://maps.google.com/maps?q=Q83J%2BMQC%20District%205%2C%20Tehran%2C%20Tehran%20Province%2C%20Iran&z=16&output=embed"`. |
 
 ---
 
@@ -105,60 +103,71 @@ Required screens: landing/home, projects, products, magazine/blog, contact, admi
 
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| ADM-01 | Admin login | Protected login form; valid session required for editors | **FAIL** | No admin directory, login script, or auth. |
-| ADM-02 | Admin logout | Logout destroys session and blocks editors | **FAIL** | No logout. |
-| ADM-03 | Admin session | Unauthenticated requests to editors redirect to login | **FAIL** | No session layer. |
+| ADM-01 | Admin login | Valid session after POST | **PASS** | Live `/admin/login` 200. POST with CSRF → 302 `Location: /admin`. Follow-up `/admin` 200 `stat-grid`. Unauthenticated `/admin` 302 → `/admin/login`. |
+| ADM-02 | Admin logout | Session destroyed | **PASS** | `/admin/logout` 302 → `/admin/login`. Subsequent `/admin` 302 login. |
+| ADM-03 | Admin session required | Editors blocked when logged out | **PASS** | `km_require_admin()` redirects. Confirmed live. |
 
 ---
 
 ## 7. Admin CMS editors
 
-Each editor must load, save, and publish the named content.
-
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| CMS-01 | Slider photos | Upload/reorder/delete home slider images | **FAIL** | No slider editor, no upload pipeline. |
-| CMS-02 | Home page sections | Edit home section content | **FAIL** | No home-section editor. |
-| CMS-03 | Menu items | Edit navigation labels/URLs | **FAIL** | No menu editor. |
-| CMS-04 | Blog / magazine | Create/edit/delete magazine posts | **FAIL** | No magazine CMS. |
-| CMS-05 | Projects | Create/edit/delete projects | **FAIL** | No projects CMS. |
-| CMS-06 | Products | Create/edit/delete products | **FAIL** | No products CMS. |
-| CMS-07 | Contact | Edit contact copy, address, map, and related fields | **FAIL** | No contact CMS. |
+| CMS-01 | Slider photos | `/admin/sliders` | **PASS** | Editor live; `km_handle_upload`; seed `uploads/hero-factory.jpg` 200. |
+| CMS-02 | Home sections | `/admin/home` | **PASS** | Route + `km_bi_fields` title/body in `includes/admin.php`. |
+| CMS-03 | Menu items | `/admin/menus` | **PASS** | Dual `label_fa`/`label_en` + URL. |
+| CMS-04 | Magazine | `/admin/magazine` | **PASS** | Shared collection editor. |
+| CMS-05 | Projects | `/admin/projects` | **PASS** | Shared collection editor. |
+| CMS-06 | Products | `/admin/products` | **PASS** | Title/category/excerpt/body bilingual. |
+| CMS-07 | Contact | `/admin/contact` | **PASS** | Address/hours bilingual; phone, email, plus code, map query; `social_*` URL fields. |
+| CMS-08 | About | `/admin/about` | **PASS** | Live form: `title_fa`/`title_en`, `subtitle_*`, `body_*`, `mission_*`, `vision_*`, image. |
 
 ---
 
-## 8. Bilingual admin fields (every editor field)
+## 8. Bilingual admin fields
 
-**Rule:** every admin editor field has **both** Persian and English inputs (e.g. `title_fa` / `title_en`, `body_fa` / `body_en`).
+**Rule:** every **content** editor field has FA + EN via `km_bi_fields` / `title_fa`/`title_en` (or `label_*`, `body_*`, etc.). Shared identifiers (slug, URL, phone, email, plus code, map query, social URLs, image, order, visible) are language-neutral.
 
-| ID | Function | Accept | Status | Evidence |
-| --- | --- | --- | --- | --- |
-| I18N-01 | Slider captions/alt (if text) have FA + EN | Dual inputs saved and rendered by locale | **FAIL** | No editor. |
-| I18N-02 | Home sections FA + EN | Dual inputs per section field | **FAIL** | No editor. |
-| I18N-03 | Menu items FA + EN | Dual labels (and any locale-specific URLs) | **FAIL** | No editor. |
-| I18N-04 | Magazine FA + EN | Dual title, body, excerpt, SEO as applicable | **FAIL** | No editor. |
-| I18N-05 | Projects FA + EN | Dual title, body, and other text fields | **FAIL** | No editor. |
-| I18N-06 | Products FA + EN | Dual title, body, specs text | **FAIL** | No editor. |
-| I18N-07 | Contact FA + EN | Dual address/hours/copy fields | **FAIL** | No editor. |
-| I18N-08 | No FA-only or EN-only text field in any editor | Code review: every user-facing string field is paired | **FAIL** | No admin forms exist to review. |
-
----
-
-## 9. Uploads and data-file privacy
-
-| ID | Function | Accept | Status | Evidence |
-| --- | --- | --- | --- | --- |
-| UP-01 | Uploads work | Admin can upload images; files land in a web-served uploads dir and appear on the public site | **FAIL** | No upload handler. |
-| UP-02 | JSON/data files are not publicly listable | Directory listing disabled; data stores not browsable via URL; sensitive JSON not in a public listing | **PENDING** | No data directory yet. Cannot verify listing until deploy. Must be implemented (`Options -Indexes` / `.htaccess` / store outside docroot) before go-live. |
+| ID | Function | Status | Evidence |
+| --- | --- | --- | --- |
+| I18N-01 | Slider title/subtitle/cta FA+EN | **PASS** | Live `/admin/sliders`: `title_fa/en`, `subtitle_fa/en`, `cta_fa/en`. |
+| I18N-02 | Home sections FA+EN | **PASS** | `km_collect_bi('title')`, `km_collect_bi('body')`. |
+| I18N-03 | Menu labels FA+EN | **PASS** | `km_collect_bi('label')`. |
+| I18N-04 | Magazine FA+EN | **PASS** | title/excerpt/body. |
+| I18N-05 | Projects FA+EN | **PASS** | title/excerpt/body. |
+| I18N-06 | Products FA+EN | **PASS** | title/category/excerpt/body. |
+| I18N-07 | Contact copy FA+EN | **PASS** | Live: `address_fa/en`, `hours_fa/en`. |
+| I18N-08 | About FA+EN | **PASS** | Live `/admin/about` dual inputs as listed in CMS-08. |
+| I18N-09 | No unpaired content string field | **PASS** | All `type === 'bi'` fields go through `km_bi_fields`. |
 
 ---
 
-## 10. Syntax / static checks (when code exists)
+## 9. Social icons
 
 | ID | Function | Accept | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| PHP-01 | Every PHP file passes `php -l` | Zero syntax errors | **PENDING** | 0 PHP files. Local `php` CLI is **not installed**. Re-run after source exists and PHP is on PATH. |
-| SEC-01 | No secrets in git | No DirectAdmin password, DB password, or API keys in the tree | **PASS** (vacuously, current tree) | README only. Re-check on every commit. |
+| SOC-01 | `km_active_socials` / `km_render_socials` only if URL non-empty | Empty URL omitted | **PASS** | `includes/bootstrap.php` skips `trim($url) === ''`. `km_render_socials` returns `''` when no items. |
+| SOC-02 | Homepage has no `social-btn` while socials empty | No public icons | **PASS** | `data/site.json` socials all `""`. Live `/` `social-btn` count = **0**. |
+| SOC-03 | Admin contact has `social_*` URL fields | Instagram…Facebook inputs | **PASS** | Live `/admin/contact` form includes `social_*` URL inputs (with preview `social-btn` spans in admin only). |
+
+---
+
+## 10. Uploads and data privacy
+
+| ID | Function | Accept | Status | Evidence |
+| --- | --- | --- | --- | --- |
+| UP-01 | Uploads work | Images served | **PASS** | `https://kankashmachine.com/uploads/hero-factory.jpg` 200. Upload handler `km_handle_upload()`. |
+| UP-02 | JSON/data not publicly listable | `/data/` and `/data/site.json` denied | **PASS** | Live `/data/` **403**, `/data/site.json` **403**, `/uploads/` **403**. Root `.htaccess` `RewriteRule ^data/ - [F,L]`; `data/.htaccess` `Require all denied`; `Options -Indexes`. |
+
+---
+
+## 11. Syntax / secrets
+
+| ID | Function | Accept | Status | Evidence |
+| --- | --- | --- | --- | --- |
+| PHP-01 | `php -l` every PHP file | Zero syntax errors | **PENDING** | Local PHP CLI still missing. Live PHP routes 200, so files parse on the server. |
+| SEC-01 | No DirectAdmin password in git | No DA secret | **PASS** | Not present. |
+| SEC-02 | No CMS credentials in git | Default admin password not in repo | **FAIL** | `README.md` documents the default CMS username and password in plaintext. `data/site.json` stores `password_hash`; `includes/bootstrap.php` has a hardcoded `KM_PEPPER`. |
 
 ---
 
@@ -166,19 +175,19 @@ Each editor must load, save, and publish the named content.
 
 | Status | Count |
 | --- | --- |
-| PASS | 3 (GH-01 repo exists; DA-02 no password in git; SEC-01 no secrets in current tree) |
-| FAIL | 39 |
-| PENDING | 3 (DA-03 panel login; UP-02 listing once files exist; PHP-01 lint once PHP exists) |
+| PASS | 46 |
+| FAIL | 8 (FG-02…FG-08, UI-01, SEC-02) |
+| PENDING | 2 (DA-03, PHP-01) |
 
-**Go-live:** not ready. Almost every product function is missing because there is no application, no Figma screen set, and no deploy.
+**Go-live (functions):** public site, i18n, map, admin CMS, socials-if-URL, GitHub, deploy — **accepted**.  
+**Not accepted:** Figma completeness / design parity; default CMS password in README.
 
 ---
 
-## Required next engineering (not done in this QA pass)
+## Remaining defects
 
-1. Clone `https://github.com/mehran-au/KankashMachine.git` into the empty workspace.  
-2. Complete Figma: home (real industrial UI), products list+detail, projects list+detail, magazine list+detail, contact, admin (login + each editor), plus EN/LTR.  
-3. Implement bilingual PHP (or agreed stack) site + CMS with FA default RTL, flag switch, cookie/session persistence.  
-4. Contact map embed for Plus Code **Q83J+MQC** (District 5, Tehran).  
-5. Dual FA/EN inputs on every admin field; working uploads; deny public listing of JSON/data.  
-6. Install PHP CLI for `php -l`. Deploy to DirectAdmin `public_html` only after QA PASSes — **this pass does not deploy.**
+1. Figma is still a home wireframe; required screens and EN/LTR are missing (`FG-02`–`FG-08`, `UI-01`).  
+2. Default CMS password is committed in `README.md`; pepper is hardcoded (`SEC-02`). Rotate the CMS password and stop documenting it in git.  
+3. Local `php` CLI is absent, so `php -l` was not run (`PHP-01`).  
+4. `includes/*.php` are web-reachable (HTTP 200, empty body — source not leaked). Harden with deny rules.  
+5. Contact phone in `site.json` is still the placeholder `+98 21 0000 0000`.

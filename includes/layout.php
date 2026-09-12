@@ -38,7 +38,7 @@ function km_flag_svg(string $code): string
     if ($code === 'gb') {
         return '<svg class="flag-svg" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30 M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30 M60,0 0,30" stroke="#C8102E" stroke-width="2"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>';
     }
-    return '<svg class="flag-svg" viewBox="0 0 21 14" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="21" height="4.67" fill="#239F40"/><rect y="4.67" width="21" height="4.66" fill="#fff"/><rect y="9.33" width="21" height="4.67" fill="#DA0000"/><path fill="#DA0000" d="M10.5 5.35l.35 1.05h1.1l-.9.65.35 1.05-.9-.65-.9.65.35-1.05-.9-.65h1.1z"/></svg>';
+    return '<svg class="flag-svg" viewBox="0 0 21 14" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="21" height="4.67" fill="#239F40"/><rect y="4.67" width="21" height="4.66" fill="#fff"/><rect y="9.33" width="21" height="4.67" fill="#DA0000"/></svg>';
 }
 
 function km_lang_toggle_html(): string
@@ -64,7 +64,7 @@ function km_header(array $site, string $title, string $description = ''): void
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=3">
+    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=5">
 </head>
 <body>
 <div class="page">
