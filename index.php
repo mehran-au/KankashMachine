@@ -194,13 +194,22 @@ if ($path === '/contact') {
     $sent = false;
     if (km_is_post()) {
         km_csrf_check();
+        if (trim((string) ($_POST['website'] ?? '')) !== '') {
+            $sent = true;
+        } elseif (!km_rate_ok('contact', 6, 3600)) {
+            $sent = false;
+            $_SESSION['km_flash'] = km_t('too_many');
+        }
         $msg = [
+            'id' => km_next_id($site['messages'] ?? []),
             'name' => trim((string) ($_POST['name'] ?? '')),
             'email' => trim((string) ($_POST['email'] ?? '')),
             'message' => trim((string) ($_POST['message'] ?? '')),
             'at' => date('c'),
+            'status' => 'unread',
+            'replies' => [],
         ];
-        if ($msg['name'] !== '' && $msg['message'] !== '') {
+        if (!$sent && empty($_SESSION['km_flash']) && $msg['name'] !== '' && $msg['message'] !== '') {
             $site['messages'][] = $msg;
             km_save_site($site);
             $sent = true;
@@ -241,15 +250,19 @@ if ($path === '/contact') {
     echo '<section class="section contact-grid">';
     echo '<div class="panel contact-card">';
     echo '<p><strong>' . km_h(km_t('address')) . '</strong><br>' . km_h($s['address_' . $GLOBALS['KM_LANG']] ?? '') . '</p>';
-    echo '<p><strong>' . km_h(km_t('phone')) . '</strong><br>' . km_h($s['phone'] ?? '') . '</p>';
-    echo '<p><strong>' . km_h(km_t('email')) . '</strong><br>' . km_h($s['email'] ?? '') . '</p>';
+    echo '<p><strong>' . km_h(km_t('phone')) . '</strong><br>' . km_phone_links((string) ($s['phone'] ?? '')) . '</p>';
+    echo '<p><strong>' . km_h(km_t('email')) . '</strong><br>' . (isset($s['email']) && $s['email'] !== '' ? '<a class="tel" href="mailto:' . km_h($s['email']) . '">' . km_h($s['email']) . '</a>' : '') . '</p>';
     echo '<p><strong>' . km_h(km_t('hours')) . '</strong><br>' . km_h($s['hours_' . $GLOBALS['KM_LANG']] ?? '') . '</p>';
     echo km_render_socials($site, 'socials socials-contact');
     echo '</div><div>';
-    if ($sent) {
+    if (!empty($_SESSION['km_flash'])) {
+        echo '<p class="flash">' . km_h($_SESSION['km_flash']) . '</p>';
+        unset($_SESSION['km_flash']);
+    } elseif ($sent) {
         echo '<p class="flash">' . km_h(km_t('sent')) . '</p>';
     }
     echo '<form class="panel" method="post">' . km_csrf_field();
+    echo '<label class="hp" aria-hidden="true">website<input name="website" tabindex="-1" autocomplete="off"></label>';
     echo '<label>' . km_h(km_t('name')) . '<input name="name" required></label>';
     echo '<label>' . km_h(km_t('email')) . '<input type="email" name="email"></label>';
     echo '<label>' . km_h(km_t('message')) . '<textarea name="message" rows="5" required></textarea></label>';

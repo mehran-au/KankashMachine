@@ -139,6 +139,70 @@ function km_fill_template(string $tpl, array $vars): string
     return $tpl;
 }
 
+function km_client_ip(): string
+{
+    $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+    return preg_match('/^[0-9a-fA-F:.]+$/', $ip) ? $ip : '0.0.0.0';
+}
+
+function km_rate_ok(string $bucket, int $max, int $seconds): bool
+{
+    $file = KM_ROOT . '/data/rate.json';
+    $now = time();
+    $data = [];
+    if (is_file($file)) {
+        $raw = (string) file_get_contents($file);
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $data = $decoded;
+        }
+    }
+    $key = $bucket . ':' . km_client_ip();
+    $hits = array_values(array_filter($data[$key] ?? [], static fn($t) => is_int($t) && $t > $now - $seconds));
+    if (count($hits) >= $max) {
+        return false;
+    }
+    $hits[] = $now;
+    $data[$key] = $hits;
+    if (count($data) > 400) {
+        $data = array_slice($data, -200, null, true);
+    }
+    @file_put_contents($file, json_encode($data), LOCK_EX);
+    return true;
+}
+
+function km_phone_links(string $raw): string
+{
+    $raw = trim($raw);
+    if ($raw === '') {
+        return '';
+    }
+    $parts = preg_split('/\s*[–—,;|]\s*/u', $raw) ?: [$raw];
+    $html = [];
+    foreach ($parts as $part) {
+        $part = trim((string) $part);
+        if ($part === '') {
+            continue;
+        }
+        $digits = preg_replace('/[^\d+]/', '', $part) ?? '';
+        if ($digits === '') {
+            $html[] = km_h($part);
+            continue;
+        }
+        if (strpos($digits, '021') === 0) {
+            $tel = '+98' . substr($digits, 1);
+        } elseif (strpos($digits, '98') === 0) {
+            $tel = '+' . ltrim($digits, '+');
+        } elseif (strpos($digits, '0') === 0) {
+            $tel = '+98' . substr($digits, 1);
+        } else {
+            $tel = $digits;
+        }
+        $html[] = '<a class="tel" href="tel:' . km_h($tel) . '">' . km_h($part) . '</a>';
+    }
+    return implode(' <span class="tel-sep">–</span> ', $html);
+}
+
 function km_mail(string $to, string $subject, string $body, string $fromEmail, string $fromName = 'Kankash Machine'): bool
 {
     $to = trim($to);

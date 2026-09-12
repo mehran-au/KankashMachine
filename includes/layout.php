@@ -64,13 +64,13 @@ function km_header(array $site, string $title, string $description = ''): void
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=6">
+    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=8">
 </head>
 <body>
 <div class="page">
     <div class="utility">
         <span><?= km_h($site['settings']['address_' . $KM_LANG] ?? '') ?></span>
-        <span><?= km_h($site['settings']['phone'] ?? '') ?></span>
+        <span><?= km_phone_links((string) ($site['settings']['phone'] ?? '')) ?></span>
     </div>
     <header class="site-header">
         <a class="brand" href="<?= km_h(km_url('/')) ?>">
@@ -122,8 +122,8 @@ function km_footer(array $site): void
             <div>
                 <h3><?= km_h(km_t('contact')) ?></h3>
                 <p><?= km_h($site['settings']['address_fa'] && km_t('address') ? ($site['settings']['address_' . $GLOBALS['KM_LANG']] ?? '') : '') ?></p>
-                <p><?= km_h($site['settings']['phone'] ?? '') ?></p>
-                <p><?= km_h($site['settings']['email'] ?? '') ?></p>
+                <p><?= km_phone_links((string) ($site['settings']['phone'] ?? '')) ?></p>
+                <p><?php $em = (string) ($site['settings']['email'] ?? ''); echo $em !== '' ? '<a class="tel" href="mailto:' . km_h($em) . '">' . km_h($em) . '</a>' : ''; ?></p>
             </div>
         </div>
         <div class="footer-bottom">© <?= date('Y') ?> <?= km_h(km_t('site_name')) ?></div>

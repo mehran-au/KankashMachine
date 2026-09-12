@@ -105,6 +105,18 @@ function km_ui_strings(string $lang): array
         'email_sent' => 'ایمیل تایید ارسال شد.',
         'email_failed' => 'استعلام ذخیره شد؛ ارسال ایمیل ناموفق بود.',
         'received_at' => 'تاریخ',
+        'filter_all' => 'همه',
+        'filter_unread' => 'خوانده‌نشده',
+        'filter_read' => 'خوانده‌شده',
+        'filter_responded' => 'پاسخ‌داده‌شده',
+        'respond' => 'پاسخ',
+        'reply' => 'متن پاسخ',
+        'mark_read' => 'علامت خوانده‌شده',
+        'mark_unread' => 'علامت نخوانده',
+        'delete_selected' => 'حذف موارد انتخابی',
+        'no_email' => 'ایمیل ندارد؛ پاسخ فقط ذخیره می‌شود.',
+        'reply_sent' => 'پاسخ ارسال شد.',
+        'too_many' => 'تعداد درخواست زیاد است. کمی بعد دوباره تلاش کنید.',
     ];
     $en = [
         'site_name' => 'Kankash Machine',
@@ -191,6 +203,18 @@ function km_ui_strings(string $lang): array
         'email_sent' => 'Confirmation email sent.',
         'email_failed' => 'Enquiry saved; email could not be sent.',
         'received_at' => 'Received',
+        'filter_all' => 'All',
+        'filter_unread' => 'Unread',
+        'filter_read' => 'Read',
+        'filter_responded' => 'Responded',
+        'respond' => 'Respond',
+        'reply' => 'Reply',
+        'mark_read' => 'Mark read',
+        'mark_unread' => 'Mark unread',
+        'delete_selected' => 'Delete selected',
+        'no_email' => 'No email; reply will be saved only.',
+        'reply_sent' => 'Reply sent.',
+        'too_many' => 'Too many requests. Please try again later.',
     ];
     return $lang === 'en' ? $en : $fa;
 }

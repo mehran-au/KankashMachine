@@ -30,7 +30,9 @@ main { flex: 1; }
   padding: 7px 6vw; font-size: 11px; letter-spacing: .04em; color: var(--muted);
   background: #05070a; border-bottom: 1px solid var(--line);
 }
-.utility a { color: inherit; }
+.utility a, .tel { color: inherit; }
+a.tel { text-decoration: underline; text-underline-offset: 3px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .site-header {
   display: flex; align-items: center; gap: 24px; padding: 12px 6vw;
   position: sticky; top: 0; z-index: 20;

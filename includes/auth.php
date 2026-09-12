@@ -42,6 +42,9 @@ function km_require_admin(): void
 
 function km_attempt_login(array $site, string $username, string $password): bool
 {
+    if (!km_rate_ok('login', 8, 900)) {
+        return false;
+    }
     $admin = $site['admin'] ?? [];
     $userOk = hash_equals((string) ($admin['username'] ?? 'admin'), $username);
     $hash = (string) ($admin['password_hash'] ?? '');

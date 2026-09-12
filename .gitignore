@@ -1,4 +1,5 @@
 /data/site.local.json
+/data/rate.json
 /uploads/*
 !/uploads/.htaccess
 !/uploads/hero-factory.jpg

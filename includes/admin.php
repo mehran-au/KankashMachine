@@ -12,8 +12,8 @@ function km_admin_nav_items(): array
         '/admin/projects' => km_t('projects'),
         '/admin/about' => km_t('about'),
         '/admin/magazine' => km_t('magazine'),
-        '/admin/contact' => km_t('contact'),
         '/admin/enquiries' => km_t('messages'),
+        '/admin/contact' => km_t('contact'),
     ];
 }
 
@@ -30,8 +30,8 @@ function km_admin_header(string $title): void
     <title><?= km_h($title) ?> · <?= km_h(km_t('admin')) ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=7">
-    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/admin.css')) ?>?v=7">
+    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=8">
+    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/admin.css')) ?>?v=8">
 </head>
 <body class="admin-body">
 <aside class="admin-side">
@@ -457,35 +457,115 @@ function km_handle_admin(array &$site, string $path): void
         echo '<p class="field-label">' . km_h(km_t('confirm_body')) . '</p>';
         km_bi_fields('confirm_body', $s, true, 'confirm_body_fa', 'confirm_body_en');
         echo '<button class="btn btn-accent" type="submit">' . km_h(km_t('save')) . '</button></form>';
-        echo '<p class="hint"><a href="' . km_h(km_url('/admin/enquiries')) . '">' . km_h(km_t('messages')) . '</a></p>';
         km_admin_footer();
         return;
     }
 
     if ($path === '/admin/enquiries') {
-        if (km_is_post() && isset($_POST['delete_id'])) {
-            km_csrf_check();
-            $id = (int) $_POST['delete_id'];
-            $site['messages'] = array_values(array_filter($site['messages'] ?? [], static fn($m, $i) => $i !== $id, ARRAY_FILTER_USE_BOTH));
-            km_save_site($site);
-            km_set_flash(km_t('saved'));
-            km_redirect(km_url('/admin/enquiries'));
-        }
         $msgs = $site['messages'] ?? [];
+        foreach ($msgs as $i => $m) {
+            if (empty($m['status'])) {
+                $msgs[$i]['status'] = 'unread';
+            }
+            if (empty($m['id'])) {
+                $msgs[$i]['id'] = $i + 1;
+            }
+        }
+        if (km_is_post()) {
+            km_csrf_check();
+            $action = (string) ($_POST['action'] ?? '');
+            $ids = array_map('intval', (array) ($_POST['ids'] ?? []));
+            if (isset($_POST['delete_id'])) {
+                $ids[] = (int) $_POST['delete_id'];
+                $action = 'delete';
+            }
+            $s = $site['settings'] ?? [];
+            $from = (string) ($s['email'] ?? 'info@kankashmachine.com');
+            foreach ($msgs as $i => $m) {
+                $mid = (int) ($m['id'] ?? $i);
+                if ($action === 'respond' && $mid === (int) ($_POST['id'] ?? 0)) {
+                    $reply = trim((string) ($_POST['reply'] ?? ''));
+                    if ($reply !== '') {
+                        $msgs[$i]['status'] = 'responded';
+                        $msgs[$i]['replies'] = $msgs[$i]['replies'] ?? [];
+                        $msgs[$i]['replies'][] = ['at' => date('c'), 'body' => $reply];
+                        $to = (string) ($m['email'] ?? '');
+                        if ($to !== '') {
+                            km_mail($to, km_t('respond') . ' — ' . km_t('site_name'), $reply, $from, km_t('site_name'));
+                        }
+                        km_set_flash(km_t('reply_sent'));
+                    }
+                } elseif (in_array($mid, $ids, true) || ($action !== 'respond' && $mid === (int) ($_POST['id'] ?? -1))) {
+                    if ($action === 'delete') {
+                        unset($msgs[$i]);
+                    } elseif ($action === 'read') {
+                        $msgs[$i]['status'] = ($m['status'] ?? '') === 'responded' ? 'responded' : 'read';
+                    } elseif ($action === 'unread') {
+                        if (($m['status'] ?? '') !== 'responded') {
+                            $msgs[$i]['status'] = 'unread';
+                        }
+                    }
+                }
+            }
+            $site['messages'] = array_values($msgs);
+            km_save_site($site);
+            $filter = (string) ($_GET['status'] ?? 'all');
+            km_redirect(km_url('/admin/enquiries') . ($filter && $filter !== 'all' ? '?status=' . rawurlencode($filter) : ''));
+        }
+        $filter = (string) ($_GET['status'] ?? 'all');
+        if (!in_array($filter, ['all', 'unread', 'read', 'responded'], true)) {
+            $filter = 'all';
+        }
+        $counts = ['all' => count($msgs), 'unread' => 0, 'read' => 0, 'responded' => 0];
+        foreach ($msgs as $m) {
+            $st = $m['status'] ?? 'unread';
+            if (isset($counts[$st])) {
+                $counts[$st]++;
+            }
+        }
+        $visible = array_filter($msgs, static fn($m) => $filter === 'all' || ($m['status'] ?? 'unread') === $filter);
         km_admin_header(km_t('messages'));
         km_flash();
-        echo '<p class="hint">' . km_h(km_t('messages')) . ' — ' . count($msgs) . '</p>';
-        echo '<section class="panel" style="margin:0 28px">';
-        if (!$msgs) {
-            echo '<p>' . km_h(km_t('empty_inbox')) . '</p>';
+        echo '<nav class="filters">';
+        foreach (['all' => 'filter_all', 'unread' => 'filter_unread', 'read' => 'filter_read', 'responded' => 'filter_responded'] as $key => $label) {
+            $cls = $filter === $key ? ' is-on' : '';
+            $href = km_url('/admin/enquiries') . ($key === 'all' ? '' : '?status=' . $key);
+            echo '<a class="chip' . $cls . '" href="' . km_h($href) . '">' . km_h(km_t($label)) . ' (' . (int) $counts[$key] . ')</a>';
         }
-        foreach (array_reverse($msgs, true) as $i => $m) {
-            echo '<div class="row-item"><div><strong>' . km_h($m['name'] ?? '') . '</strong>';
-            echo ' · ' . km_h($m['email'] ?? '');
-            echo '<small>' . km_h(km_t('received_at')) . ': ' . km_h($m['at'] ?? '') . '</small>';
-            echo '<p>' . nl2br(km_h($m['message'] ?? '')) . '</p></div>';
+        echo '</nav>';
+        echo '<form id="bulk" method="post" class="bulk-bar">' . km_csrf_field();
+        echo '<button type="submit" name="action" value="read">' . km_h(km_t('mark_read')) . '</button> ';
+        echo '<button type="submit" name="action" value="delete" onclick="return confirm(\'' . km_h(km_t('confirm_delete')) . '\')">' . km_h(km_t('delete_selected')) . '</button>';
+        echo '</form>';
+        echo '<section class="enquiry-list">';
+        if (!$visible) {
+            echo '<p class="hint">' . km_h(km_t('empty_inbox')) . '</p>';
+        }
+        foreach (array_reverse($visible, true) as $i => $m) {
+            $st = $m['status'] ?? 'unread';
+            $mid = (int) ($m['id'] ?? $i);
+            echo '<article class="enquiry st-' . km_h($st) . '">';
+            echo '<label class="pick"><input form="bulk" type="checkbox" name="ids[]" value="' . $mid . '"></label>';
+            echo '<div class="enquiry-body">';
+            echo '<p class="enquiry-meta"><strong>' . km_h($m['name'] ?? '') . '</strong> · ';
+            $em = (string) ($m['email'] ?? '');
+            echo $em !== '' ? '<a href="mailto:' . km_h($em) . '">' . km_h($em) . '</a>' : km_h(km_t('no_email'));
+            echo ' <span class="badge">' . km_h(km_t('filter_' . $st)) . '</span>';
+            echo '<small>' . km_h($m['at'] ?? '') . '</small></p>';
+            echo '<p>' . nl2br(km_h($m['message'] ?? '')) . '</p>';
+            foreach ($m['replies'] ?? [] as $r) {
+                echo '<div class="reply-log"><small>' . km_h($r['at'] ?? '') . '</small><p>' . nl2br(km_h($r['body'] ?? '')) . '</p></div>';
+            }
+            echo '<form method="post" class="respond-form">' . km_csrf_field();
+            echo '<input type="hidden" name="action" value="respond"><input type="hidden" name="id" value="' . $mid . '">';
+            echo '<textarea name="reply" rows="3" placeholder="' . km_h(km_t('reply')) . '" required></textarea>';
+            echo '<button class="btn btn-accent" type="submit">' . km_h(km_t('respond')) . '</button></form>';
+            echo '<div class="enquiry-bar">';
+            echo '<form method="post">' . km_csrf_field() . '<input type="hidden" name="action" value="read"><input type="hidden" name="id" value="' . $mid . '"><button type="submit">' . km_h(km_t('mark_read')) . '</button></form>';
+            echo '<form method="post">' . km_csrf_field() . '<input type="hidden" name="action" value="unread"><input type="hidden" name="id" value="' . $mid . '"><button type="submit">' . km_h(km_t('mark_unread')) . '</button></form>';
             echo '<form method="post" onsubmit="return confirm(\'' . km_h(km_t('confirm_delete')) . '\')">' . km_csrf_field();
-            echo '<input type="hidden" name="delete_id" value="' . (int) $i . '"><button type="submit">' . km_h(km_t('delete')) . '</button></form></div>';
+            echo '<input type="hidden" name="action" value="delete"><input type="hidden" name="delete_id" value="' . $mid . '"><button type="submit">' . km_h(km_t('delete')) . '</button></form>';
+            echo '</div></div></article>';
         }
         echo '</section>';
         km_admin_footer();
