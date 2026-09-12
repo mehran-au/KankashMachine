@@ -131,6 +131,35 @@ function km_social_networks(): array
     ];
 }
 
+function km_fill_template(string $tpl, array $vars): string
+{
+    foreach ($vars as $k => $v) {
+        $tpl = str_replace('{' . $k . '}', (string) $v, $tpl);
+    }
+    return $tpl;
+}
+
+function km_mail(string $to, string $subject, string $body, string $fromEmail, string $fromName = 'Kankash Machine'): bool
+{
+    $to = trim($to);
+    if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+    if (!filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
+        $fromEmail = 'noreply@kankashmachine.com';
+    }
+    $encName = '=?UTF-8?B?' . base64_encode($fromName) . '?=';
+    $encSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    $headers = implode("\r\n", [
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+        'From: ' . $encName . ' <' . $fromEmail . '>',
+        'Reply-To: ' . $fromEmail,
+    ]);
+    return @mail($to, $encSubject, $body, $headers);
+}
+
 function km_active_socials(array $site): array
 {
     $raw = $site['settings']['socials'] ?? [];

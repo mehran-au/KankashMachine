@@ -6,6 +6,11 @@
   "settings": {
     "phone": "021-44471541 – 021-44471820",
     "email": "info@kankashmachine.com",
+    "notify_email": "info@kankashmachine.com",
+    "confirm_subject_fa": "استعلام شما دریافت شد — کنکاش ماشین",
+    "confirm_subject_en": "We received your enquiry — Kankash Machine",
+    "confirm_body_fa": "سلام {name}،\n\nاز تماس شما متشکریم. استعلام‌تان ثبت شد و تیم کنکاش ماشین به‌زودی پاسخ می‌دهد.\n\nمتن پیام شما:\n{message}\n\nکنکاش ماشین",
+    "confirm_body_en": "Hello {name},\n\nThank you for contacting Kankash Machine. Your enquiry has been recorded and we will reply shortly.\n\nYour message:\n{message}\n\nKankash Machine",
     "hours_fa": "شنبه تا چهارشنبه ۹ تا ۱۷",
     "hours_en": "Sat–Wed 9:00–17:00",
     "address_fa": "تهران – خ اشرفی اصفهانی – ابتدای بلوار مخبری – پلاک ۱۲ – واحد ۲۰",

@@ -204,6 +204,35 @@ if ($path === '/contact') {
             $site['messages'][] = $msg;
             km_save_site($site);
             $sent = true;
+            $s = $site['settings'] ?? [];
+            $vars = [
+                'name' => $msg['name'],
+                'email' => $msg['email'],
+                'message' => $msg['message'],
+                'date' => $msg['at'],
+            ];
+            $lang = $GLOBALS['KM_LANG'] === 'en' ? 'en' : 'fa';
+            $from = (string) ($s['email'] ?? 'info@kankashmachine.com');
+            $fromName = km_t('site_name');
+            $subject = (string) ($s['confirm_subject_' . $lang] ?? '');
+            $body = (string) ($s['confirm_body_' . $lang] ?? '');
+            if ($subject === '') {
+                $subject = $lang === 'en' ? 'We received your enquiry' : 'استعلام شما دریافت شد';
+            }
+            if ($body === '') {
+                $body = $lang === 'en'
+                    ? "Hello {name},\n\nWe received your enquiry and will reply shortly.\n\n{message}"
+                    : "سلام {name}،\n\nپیام شما دریافت شد و به‌زودی پاسخ می‌دهیم.\n\n{message}";
+            }
+            if ($msg['email'] !== '') {
+                km_mail($msg['email'], km_fill_template($subject, $vars), km_fill_template($body, $vars), $from, $fromName);
+            }
+            $notify = trim((string) ($s['notify_email'] ?? $s['email'] ?? ''));
+            if ($notify !== '') {
+                $noteSub = ($lang === 'en' ? 'New website enquiry' : 'استعلام جدید از وب‌سایت') . ' — ' . $msg['name'];
+                $noteBody = $msg['name'] . "\n" . $msg['email'] . "\n\n" . $msg['message'];
+                km_mail($notify, $noteSub, $noteBody, $from, $fromName);
+            }
         }
     }
     $s = $site['settings'] ?? [];

@@ -13,6 +13,7 @@ function km_admin_nav_items(): array
         '/admin/about' => km_t('about'),
         '/admin/magazine' => km_t('magazine'),
         '/admin/contact' => km_t('contact'),
+        '/admin/enquiries' => km_t('messages'),
     ];
 }
 
@@ -29,8 +30,8 @@ function km_admin_header(string $title): void
     <title><?= km_h($title) ?> · <?= km_h(km_t('admin')) ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>">
-    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/admin.css')) ?>">
+    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=7">
+    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/admin.css')) ?>?v=7">
 </head>
 <body class="admin-body">
 <aside class="admin-side">
@@ -223,8 +224,9 @@ function km_handle_admin(array &$site, string $path): void
     if ($path === '/admin') {
         km_admin_header(km_t('dashboard'));
         echo '<div class="stat-grid">';
-        foreach ([['sliders', $site['sliders'] ?? []], ['products', $site['products'] ?? []], ['projects', $site['projects'] ?? []], ['magazine', $site['magazine'] ?? []]] as $pair) {
-            echo '<div class="stat"><strong>' . count($pair[1]) . '</strong><span>' . km_h(km_t($pair[0] === 'sliders' ? 'sliders' : $pair[0])) . '</span></div>';
+        foreach ([['sliders', $site['sliders'] ?? []], ['products', $site['products'] ?? []], ['projects', $site['projects'] ?? []], ['messages', $site['messages'] ?? []]] as $pair) {
+            $href = $pair[0] === 'messages' ? '/admin/enquiries' : '/admin/' . ($pair[0] === 'sliders' ? 'sliders' : $pair[0]);
+            echo '<a class="stat" href="' . km_h(km_url($href)) . '"><strong>' . count($pair[1]) . '</strong><span>' . km_h(km_t($pair[0] === 'sliders' ? 'sliders' : $pair[0])) . '</span></a>';
         }
         echo '</div>';
         km_admin_footer();
@@ -415,8 +417,10 @@ function km_handle_admin(array &$site, string $path): void
             $s = array_merge($s, km_collect_bi('address'), km_collect_bi('hours'));
             $s['phone'] = trim((string) ($_POST['phone'] ?? ''));
             $s['email'] = trim((string) ($_POST['email'] ?? ''));
+            $s['notify_email'] = trim((string) ($_POST['notify_email'] ?? ''));
             $s['plus_code'] = trim((string) ($_POST['plus_code'] ?? ''));
             $s['map_query'] = trim((string) ($_POST['map_query'] ?? ''));
+            $s = array_merge($s, km_collect_bi('confirm_subject'), km_collect_bi('confirm_body'));
             $s['socials'] = $s['socials'] ?? [];
             foreach (km_social_networks() as $key => $_label) {
                 $s['socials'][$key] = trim((string) ($_POST['social_' . $key] ?? ''));
@@ -445,14 +449,43 @@ function km_handle_admin(array &$site, string $path): void
             $val = $s['socials'][$key] ?? '';
             echo '<label class="social-admin"><span class="social-btn social-' . km_h($key) . '">' . km_social_svg($key) . '</span> ' . km_h($label) . '<input name="social_' . km_h($key) . '" value="' . km_h($val) . '" placeholder="https://..." dir="ltr"></label>';
         }
+        echo '<h2>' . km_h(km_t('confirm_email')) . '</h2>';
+        echo '<p class="hint" style="padding:0">' . km_h(km_t('confirm_hint')) . '</p>';
+        echo '<label>' . km_h(km_t('notify_email')) . '<input name="notify_email" value="' . km_h($s['notify_email'] ?? ($s['email'] ?? '')) . '" dir="ltr" placeholder="info@kankashmachine.com"></label>';
+        echo '<p class="field-label">' . km_h(km_t('confirm_subject')) . '</p>';
+        km_bi_fields('confirm_subject', $s, false, 'confirm_subject_fa', 'confirm_subject_en');
+        echo '<p class="field-label">' . km_h(km_t('confirm_body')) . '</p>';
+        km_bi_fields('confirm_body', $s, true, 'confirm_body_fa', 'confirm_body_en');
         echo '<button class="btn btn-accent" type="submit">' . km_h(km_t('save')) . '</button></form>';
+        echo '<p class="hint"><a href="' . km_h(km_url('/admin/enquiries')) . '">' . km_h(km_t('messages')) . '</a></p>';
+        km_admin_footer();
+        return;
+    }
+
+    if ($path === '/admin/enquiries') {
+        if (km_is_post() && isset($_POST['delete_id'])) {
+            km_csrf_check();
+            $id = (int) $_POST['delete_id'];
+            $site['messages'] = array_values(array_filter($site['messages'] ?? [], static fn($m, $i) => $i !== $id, ARRAY_FILTER_USE_BOTH));
+            km_save_site($site);
+            km_set_flash(km_t('saved'));
+            km_redirect(km_url('/admin/enquiries'));
+        }
         $msgs = $site['messages'] ?? [];
-        echo '<section class="panel"><h2>' . km_h(km_t('messages')) . '</h2>';
+        km_admin_header(km_t('messages'));
+        km_flash();
+        echo '<p class="hint">' . km_h(km_t('messages')) . ' — ' . count($msgs) . '</p>';
+        echo '<section class="panel" style="margin:0 28px">';
         if (!$msgs) {
             echo '<p>' . km_h(km_t('empty_inbox')) . '</p>';
         }
-        foreach (array_reverse($msgs) as $m) {
-            echo '<div class="row-item"><div><strong>' . km_h($m['name'] ?? '') . '</strong> · ' . km_h($m['email'] ?? '') . '<p>' . km_h($m['message'] ?? '') . '</p></div></div>';
+        foreach (array_reverse($msgs, true) as $i => $m) {
+            echo '<div class="row-item"><div><strong>' . km_h($m['name'] ?? '') . '</strong>';
+            echo ' · ' . km_h($m['email'] ?? '');
+            echo '<small>' . km_h(km_t('received_at')) . ': ' . km_h($m['at'] ?? '') . '</small>';
+            echo '<p>' . nl2br(km_h($m['message'] ?? '')) . '</p></div>';
+            echo '<form method="post" onsubmit="return confirm(\'' . km_h(km_t('confirm_delete')) . '\')">' . km_csrf_field();
+            echo '<input type="hidden" name="delete_id" value="' . (int) $i . '"><button type="submit">' . km_h(km_t('delete')) . '</button></form></div>';
         }
         echo '</section>';
         km_admin_footer();

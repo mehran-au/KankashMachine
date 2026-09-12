@@ -95,8 +95,16 @@ function km_ui_strings(string $lang): array
         'cta_label' => 'متن دکمه',
         'cta_url' => 'پیوند دکمه',
         'plus_code' => 'کد مکانی گوگل',
-        'messages' => 'پیام‌های تماس',
-        'empty_inbox' => 'پیامی نیست.',
+        'messages' => 'استعلام‌ها',
+        'empty_inbox' => 'استعلامی ثبت نشده است.',
+        'confirm_email' => 'ایمیل تایید استعلام',
+        'confirm_subject' => 'موضوع ایمیل',
+        'confirm_body' => 'متن ایمیل',
+        'confirm_hint' => 'وقتی فرم تماس ارسال شود، این متن برای بازدیدکننده ایمیل می‌شود. می‌توانید از {name}، {email} و {message} استفاده کنید.',
+        'notify_email' => 'ایمیل دریافت استعلام (شرکت)',
+        'email_sent' => 'ایمیل تایید ارسال شد.',
+        'email_failed' => 'استعلام ذخیره شد؛ ارسال ایمیل ناموفق بود.',
+        'received_at' => 'تاریخ',
     ];
     $en = [
         'site_name' => 'Kankash Machine',
@@ -173,8 +181,16 @@ function km_ui_strings(string $lang): array
         'cta_label' => 'Button label',
         'cta_url' => 'Button URL',
         'plus_code' => 'Google plus code',
-        'messages' => 'Contact messages',
-        'empty_inbox' => 'No messages.',
+        'messages' => 'Enquiries',
+        'empty_inbox' => 'No enquiries yet.',
+        'confirm_email' => 'Enquiry confirmation email',
+        'confirm_subject' => 'Email subject',
+        'confirm_body' => 'Email body',
+        'confirm_hint' => 'Sent to the visitor after the contact form is submitted. Use {name}, {email} and {message}.',
+        'notify_email' => 'Company inbox for new enquiries',
+        'email_sent' => 'Confirmation email sent.',
+        'email_failed' => 'Enquiry saved; email could not be sent.',
+        'received_at' => 'Received',
     ];
     return $lang === 'en' ? $en : $fa;
 }
