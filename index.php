@@ -56,12 +56,16 @@ if ($path === '/') {
     }
     echo '</section>';
     $markets = $site['markets'] ?? [];
+    usort($markets, static fn($a, $b) => ($a['order'] ?? 0) <=> ($b['order'] ?? 0));
     if ($markets) {
         echo '<section class="section services-section">';
         echo '<div class="section-head"><h2>' . km_h(km_t('services')) . '</h2></div>';
         echo '<div class="markets">';
         $n = 1;
         foreach ($markets as $m) {
+            if (isset($m['visible']) && empty($m['visible'])) {
+                continue;
+            }
             echo '<article class="market" data-n="' . str_pad((string) $n, 2, '0', STR_PAD_LEFT) . '"><h3>' . km_h(km_text($m, 'title')) . '</h3><p>' . km_h(km_text($m, 'body')) . '</p></article>';
             $n++;
         }

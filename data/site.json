@@ -87,22 +87,31 @@
   ],
   "markets": [
     {
+      "id": 1,
       "title_fa": "انبار فروشگاه آنلاین",
       "title_en": "Online-shop warehouses",
       "body_fa": "اینداکشن کارتن، تجمیع و تغذیه سورتر برای پیک شبانه سفارش اینترنتی.",
-      "body_en": "Carton induction, accumulation, and sorter infeed for overnight e-commerce peaks."
+      "body_en": "Carton induction, accumulation, and sorter infeed for overnight e-commerce peaks.",
+      "order": 1,
+      "visible": true
     },
     {
+      "id": 2,
       "title_fa": "پست",
       "title_en": "Post",
       "body_fa": "جداسازی مرسوله بر اساس مسیر و کد پستی تا شوت و کیسه خروجی.",
-      "body_en": "Sort mail and parcels by route and postcode to the right chute and bag."
+      "body_en": "Sort mail and parcels by route and postcode to the right chute and bag.",
+      "order": 2,
+      "visible": true
     },
     {
+      "id": 3,
       "title_fa": "پیک و کوریر",
       "title_en": "Couriers",
       "body_fa": "نوار بارگیری ون، سورتر مقصد و مسیر کارتن در هاب توزیع شهری.",
-      "body_en": "Van-loading belts, destination sorters, and carton paths in city distribution hubs."
+      "body_en": "Van-loading belts, destination sorters, and carton paths in city distribution hubs.",
+      "order": 3,
+      "visible": true
     }
   ],
   "home_sections": [

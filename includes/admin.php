@@ -7,6 +7,7 @@ function km_admin_nav_items(): array
         '/admin' => km_t('dashboard'),
         '/admin/sliders' => km_t('sliders'),
         '/admin/home' => km_t('home_sections'),
+        '/admin/services' => km_t('services'),
         '/admin/menus' => km_t('menus'),
         '/admin/products' => km_t('products'),
         '/admin/projects' => km_t('projects'),
@@ -286,6 +287,29 @@ function km_handle_admin(array &$site, string $path): void
         }
         km_admin_header(km_t('home_sections'));
         km_item_form_list($site['home_sections'] ?? [], km_url('/admin/home'), [
+            ['type' => 'bi', 'name' => 'title', 'label' => km_t('title')],
+            ['type' => 'bi', 'name' => 'body', 'label' => km_t('body'), 'area' => true],
+            ['type' => 'order'],
+        ]);
+        km_admin_footer();
+        return;
+    }
+
+    if ($path === '/admin/services') {
+        if (km_is_post()) {
+            km_csrf_check();
+            km_save_collection($site, 'markets', static function () {
+                return array_merge(km_collect_bi('title'), km_collect_bi('body'), [
+                    'order' => (int) ($_POST['order'] ?? 1),
+                    'visible' => !empty($_POST['visible']),
+                ]);
+            });
+            km_save_site($site);
+            km_set_flash(km_t('saved'));
+            km_redirect(km_url('/admin/services'));
+        }
+        km_admin_header(km_t('services'));
+        km_item_form_list($site['markets'] ?? [], km_url('/admin/services'), [
             ['type' => 'bi', 'name' => 'title', 'label' => km_t('title')],
             ['type' => 'bi', 'name' => 'body', 'label' => km_t('body'), 'area' => true],
             ['type' => 'order'],
