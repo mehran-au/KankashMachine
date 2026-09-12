@@ -13,6 +13,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 require_once KM_ROOT . '/includes/store.php';
 require_once KM_ROOT . '/includes/i18n.php';
 require_once KM_ROOT . '/includes/auth.php';
+require_once KM_ROOT . '/includes/mailer.php';
 
 $KM_SITE = km_load_site();
 $KM_LANG = km_resolve_lang();
@@ -203,23 +204,34 @@ function km_phone_links(string $raw): string
     return implode(' <span class="tel-sep">–</span> ', $html);
 }
 
-function km_mail(string $to, string $subject, string $body, string $fromEmail, string $fromName = 'Kankash Machine'): bool
+function km_mail(string $to, string $subject, string $body, string $fromEmail = '', string $fromName = ''): bool
 {
+    global $KM_SITE;
+    $s = is_array($KM_SITE['settings'] ?? null) ? $KM_SITE['settings'] : [];
     $to = trim($to);
     if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
         return false;
     }
+    $fromEmail = trim((string) ($s['mail_from'] ?? '')) ?: $fromEmail;
+    $fromName = trim((string) ($s['mail_from_name'] ?? '')) ?: ($fromName !== '' ? $fromName : 'Kankash Machine');
     if (!filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
-        $fromEmail = 'noreply@kankashmachine.com';
+        $fromEmail = 'info@kankashmachine.com';
+    }
+    if (!empty($s['smtp_host']) && !empty($s['smtp_user']) && !empty($s['smtp_pass'])) {
+        $ok = km_smtp_send($s, $to, $subject, $body, $fromEmail, $fromName);
+        if ($ok) {
+            return true;
+        }
     }
     $encName = '=?UTF-8?B?' . base64_encode($fromName) . '?=';
     $encSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    $reply = trim((string) ($s['mail_reply_to'] ?? $fromEmail));
     $headers = implode("\r\n", [
         'MIME-Version: 1.0',
         'Content-Type: text/plain; charset=UTF-8',
         'Content-Transfer-Encoding: 8bit',
         'From: ' . $encName . ' <' . $fromEmail . '>',
-        'Reply-To: ' . $fromEmail,
+        'Reply-To: ' . $reply,
     ]);
     return @mail($to, $encSubject, $body, $headers);
 }

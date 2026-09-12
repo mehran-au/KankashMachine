@@ -14,6 +14,7 @@ function km_admin_nav_items(): array
         '/admin/magazine' => km_t('magazine'),
         '/admin/enquiries' => km_t('messages'),
         '/admin/contact' => km_t('contact'),
+        '/admin/mail' => km_t('mail_settings'),
     ];
 }
 
@@ -457,6 +458,58 @@ function km_handle_admin(array &$site, string $path): void
         echo '<p class="field-label">' . km_h(km_t('confirm_body')) . '</p>';
         km_bi_fields('confirm_body', $s, true, 'confirm_body_fa', 'confirm_body_en');
         echo '<button class="btn btn-accent" type="submit">' . km_h(km_t('save')) . '</button></form>';
+        km_admin_footer();
+        return;
+    }
+
+    if ($path === '/admin/mail') {
+        if (km_is_post()) {
+            km_csrf_check();
+            $s = $site['settings'] ?? [];
+            foreach (['mail_from', 'mail_from_name', 'mail_reply_to', 'smtp_host', 'smtp_port', 'smtp_secure', 'smtp_user'] as $k) {
+                $s[$k] = trim((string) ($_POST[$k] ?? ''));
+            }
+            $pass = (string) ($_POST['smtp_pass'] ?? '');
+            if ($pass !== '') {
+                $s['smtp_pass'] = $pass;
+            }
+            $site['settings'] = $s;
+            $KM_SITE['settings'] = $s;
+            km_save_site($site);
+            if (!empty($_POST['test_to'])) {
+                $ok = km_mail(
+                    trim((string) $_POST['test_to']),
+                    'Kankash Machine SMTP test',
+                    "SMTP test from kankashmachine.com\n" . date('c')
+                );
+                km_set_flash($ok ? km_t('test_sent') : km_t('test_failed'));
+            } else {
+                km_set_flash(km_t('saved'));
+            }
+            km_redirect(km_url('/admin/mail'));
+        }
+        $s = $site['settings'] ?? [];
+        km_admin_header(km_t('mail_settings'));
+        km_flash();
+        echo '<p class="hint">' . km_h(km_t('smtp_hint')) . '</p>';
+        echo '<form class="panel" method="post">' . km_csrf_field();
+        echo '<label>' . km_h(km_t('mail_from')) . '<input name="mail_from" value="' . km_h($s['mail_from'] ?? '') . '" dir="ltr" placeholder="info@kankashmachine.com" required></label>';
+        echo '<label>' . km_h(km_t('mail_from_name')) . '<input name="mail_from_name" value="' . km_h($s['mail_from_name'] ?? '') . '"></label>';
+        echo '<label>' . km_h(km_t('mail_reply_to')) . '<input name="mail_reply_to" value="' . km_h($s['mail_reply_to'] ?? '') . '" dir="ltr"></label>';
+        echo '<label>' . km_h(km_t('smtp_host')) . '<input name="smtp_host" value="' . km_h($s['smtp_host'] ?? 'mail.kankashmachine.com') . '" dir="ltr"></label>';
+        echo '<label>' . km_h(km_t('smtp_port')) . '<input name="smtp_port" value="' . km_h((string) ($s['smtp_port'] ?? '587')) . '" dir="ltr"></label>';
+        echo '<label>' . km_h(km_t('smtp_secure')) . '<select name="smtp_secure">';
+        foreach (['tls' => 'TLS (587)', 'ssl' => 'SSL (465)', 'none' => 'None'] as $val => $lab) {
+            $sel = (($s['smtp_secure'] ?? 'tls') === $val) ? ' selected' : '';
+            echo '<option value="' . km_h($val) . '"' . $sel . '>' . km_h($lab) . '</option>';
+        }
+        echo '</select></label>';
+        echo '<label>' . km_h(km_t('smtp_user')) . '<input name="smtp_user" value="' . km_h($s['smtp_user'] ?? '') . '" dir="ltr" autocomplete="off"></label>';
+        echo '<label>' . km_h(km_t('smtp_pass')) . '<input type="password" name="smtp_pass" value="" dir="ltr" autocomplete="new-password" placeholder="' . km_h(!empty($s['smtp_pass']) ? '••••••••' : '') . '"><small>' . km_h(km_t('smtp_pass_keep')) . '</small></label>';
+        echo '<button class="btn btn-accent" type="submit">' . km_h(km_t('save')) . '</button>';
+        echo '<hr><label>' . km_h(km_t('test_email')) . '<input name="test_to" dir="ltr" placeholder="you@example.com"></label>';
+        echo '<button type="submit">' . km_h(km_t('test_email')) . '</button>';
+        echo '</form>';
         km_admin_footer();
         return;
     }

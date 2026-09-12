@@ -22,9 +22,15 @@ function km_visible(array $items): array
 
 function km_map_iframe(array $site): string
 {
-    $q = $site['settings']['map_query'] ?? 'Q83J+MQC District 5, Tehran, Tehran Province, Iran';
-    $src = 'https://maps.google.com/maps?q=' . rawurlencode($q) . '&z=16&output=embed';
-    return '<div class="map-wrap"><iframe title="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="' . km_h($src) . '"></iframe></div>';
+    $plus = trim((string) ($site['settings']['plus_code'] ?? 'Q83J+MQC')) ?: 'Q83J+MQC';
+    $q = $plus . ' District 5, Tehran, Tehran Province, Iran';
+    $src = 'https://maps.google.com/maps?q=' . rawurlencode($q) . '&hl=fa&z=17&ie=UTF8&iwloc=A&output=embed';
+    $gmaps = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($q);
+    return '<div class="map-wrap">'
+        . '<iframe title="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="' . km_h($src) . '"></iframe>'
+        . '<div class="map-pin" aria-hidden="true"></div>'
+        . '<a class="map-cap" href="' . km_h($gmaps) . '" target="_blank" rel="noopener">' . km_h($plus) . ' · District 5, Tehran</a>'
+        . '</div>';
 }
 
 if ($path === '/') {

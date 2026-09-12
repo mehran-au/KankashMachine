@@ -64,7 +64,7 @@ function km_header(array $site, string $title, string $description = ''): void
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=8">
+    <link rel="stylesheet" href="<?= km_h(km_asset('assets/css/app.css')) ?>?v=9">
 </head>
 <body>
 <div class="page">
