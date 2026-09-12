@@ -58,14 +58,15 @@ if ($path === '/') {
     echo '</section>';
     $markets = $site['markets'] ?? [];
     if ($markets) {
-        echo '<section class="section" style="padding-bottom:0"><p class="kicker">' . km_h(km_t('markets')) . '</p></section>';
-        echo '<section class="markets">';
+        echo '<section class="section services-section">';
+        echo '<div class="section-head"><h2>' . km_h(km_t('services')) . '</h2></div>';
+        echo '<div class="markets">';
         $n = 1;
         foreach ($markets as $m) {
             echo '<article class="market" data-n="' . str_pad((string) $n, 2, '0', STR_PAD_LEFT) . '"><h3>' . km_h(km_text($m, 'title')) . '</h3><p>' . km_h(km_text($m, 'body')) . '</p></article>';
             $n++;
         }
-        echo '</section>';
+        echo '</div></section>';
     }
     echo '<section class="section"><div class="caps">';
     foreach ($sections as $sec) {
